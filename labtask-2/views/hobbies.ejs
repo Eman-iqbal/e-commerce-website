@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <div class="top-bar">
+    <p>Explore new styles designed for brighter days</p>
+  </div>
+
+  <header>
+    <nav class="navbar">
+      <div class="nav-logo">
+        <a href="/">
+          <img src="https://pk.khaadi.com/on/demandware.static/-/Library-Sites-KhaadiSharedLibrary/default/dw6994d6b6/images/FooterImages/Khaadi-Logo.png"
+            class="khaadi-logo" alt="Khaadi">
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <section class="section">
+    <h2>Our Hobbies & Passions</h2>
+    <p class="subtitle">Things we love at Khaadi</p>
+    <br>
+    <ul style="list-style:none; padding:0;">
+      <% hobbies.forEach(function(hobby) { %>
+        <li style="display:inline-block; margin:10px; padding:12px 24px;
+          background:#f5f5f5; border:1px solid #ddd; font-size:14px;">
+          <%= hobby %>
+        </li>
+      <% }); %>
+    </ul>
+  </section>
+
+</body>
+</html>
