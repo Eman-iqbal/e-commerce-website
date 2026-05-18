@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    /* Products page specific styles */
+    .products-page {
+      padding: 40px;
+      max-width: 1300px;
+      margin: auto;
+    }
+
+    .products-page h1 {
+      font-size: 28px;
+      font-weight: 400;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    .products-count {
+      text-align: center;
+      color: #888;
+      font-size: 14px;
+      margin-bottom: 30px;
+    }
+
+    /* FILTER BAR */
+    .filter-bar {
+      background: #f9f9f9;
+      border: 1px solid #e5e5e5;
+      padding: 20px 25px;
+      margin-bottom: 35px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      align-items: flex-end;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+      min-width: 160px;
+    }
+
+    .filter-group label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: #555;
+      text-transform: uppercase;
+    }
+
+    .filter-group input,
+    .filter-group select {
+      padding: 9px 12px;
+      border: 1px solid #ccc;
+      font-size: 13px;
+      outline: none;
+      background: white;
+    }
+
+    .filter-group input:focus,
+    .filter-group select:focus {
+      border-color: #2D2B2A;
+    }
+
+    .filter-btn {
+      padding: 10px 28px;
+      background: #2D2B2A;
+      color: white;
+      border: none;
+      font-size: 13px;
+      cursor: pointer;
+      letter-spacing: 1px;
+      align-self: flex-end;
+    }
+
+    .filter-btn:hover {
+      background: #ff5a00;
+    }
+
+    .clear-btn {
+      padding: 10px 20px;
+      background: white;
+      color: #2D2B2A;
+      border: 1px solid #2D2B2A;
+      font-size: 13px;
+      cursor: pointer;
+      letter-spacing: 1px;
+      align-self: flex-end;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .clear-btn:hover {
+      background: #f5f5f5;
+    }
+
+    /* PRODUCT GRID */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 25px;
+      margin-bottom: 40px;
+    }
+
+    .product-card-db {
+      border: 1px solid #f0f0f0;
+      transition: box-shadow 0.2s;
+    }
+
+    .product-card-db:hover {
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .product-card-db img {
+      width: 100%;
+      height: 280px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .product-card-db .card-info {
+      padding: 14px;
+    }
+
+    .product-card-db .card-category {
+      font-size: 11px;
+      color: #999;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 5px;
+    }
+
+    .product-card-db .card-name {
+      font-size: 14px;
+      font-weight: 400;
+      color: #2D2B2A;
+      margin-bottom: 8px;
+    }
+
+    .product-card-db .card-price {
+      font-size: 14px;
+      font-weight: 600;
+      color: #2D2B2A;
+      margin-bottom: 5px;
+    }
+
+    .product-card-db .card-rating {
+      font-size: 12px;
+      color: #ff5a00;
+      margin-bottom: 5px;
+    }
+
+    .product-card-db .card-stock {
+      font-size: 11px;
+      color: #888;
+    }
+
+    /* NO PRODUCTS MESSAGE */
+    .no-products {
+      text-align: center;
+      padding: 60px 20px;
+      color: #888;
+      grid-column: 1 / -1;
+    }
+
+    .no-products h3 {
+      font-size: 20px;
+      margin-bottom: 10px;
+      font-weight: 400;
+    }
+
+    /* PAGINATION */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin: 20px 0 50px;
+      flex-wrap: wrap;
+    }
+
+    .pagination a,
+    .pagination span {
+      padding: 9px 16px;
+      border: 1px solid #ddd;
+      text-decoration: none;
+      color: #2D2B2A;
+      font-size: 13px;
+      display: inline-block;
+    }
+
+    .pagination a:hover {
+      background: #f5f5f5;
+      border-color: #2D2B2A;
+    }
+
+    .pagination .active {
+      background: #2D2B2A;
+      color: white;
+      border-color: #2D2B2A;
+    }
+
+    .pagination .disabled {
+      color: #ccc;
+      border-color: #eee;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    @media (max-width: 1024px) {
+      .product-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (max-width: 768px) {
+      .product-grid { grid-template-columns: repeat(2, 1fr); }
+      .products-page { padding: 20px; }
+      .filter-bar { flex-direction: column; }
+    }
+
+    @media (max-width: 480px) {
+      .product-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <p>Explore new styles designed for brighter days
+      <a href="https://pk.khaadi.com/new-in/">right here.</a>
+    </p>
+  </div>
+
+  <!-- NAVBAR -->
+  <header>
+    <nav class="navbar">
+      <button class="menu-icon" id="hamburgerBtn" onclick="toggleMenu()">☰</button>
+      <div class="nav-logo">
+        <a href="/">
+          <img src="https://pk.khaadi.com/on/demandware.static/-/Library-Sites-KhaadiSharedLibrary/default/dw6994d6b6/images/FooterImages/Khaadi-Logo.png"
+            class="khaadi-logo" alt="Khaadi">
+        </a>
+      </div>
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="/">Home</a></li>
+        <li><a href="/products">Products</a></li>
+        <li><a href="/contact-us">Contact Us</a></li>
+      </ul>
+      <div class="nav-icons">
+        <a href="#" class="icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <circle cx="11.4261" cy="11.4261" r="8.42609" stroke="#2D2B2A" stroke-width="1.5"></circle>
+            <path d="M17.0435 18.0259L20.0174 20.9998" stroke="#2D2B2A" stroke-width="1.5"></path>
+          </svg>
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- MAIN PRODUCTS PAGE -->
+  <div class="products-page">
+
+    <h1>Our Products</h1>
+    <p class="products-count">
+      Showing <%= products.length %> of <%= totalProducts %> products
+      <% if (search || category || minPrice || maxPrice) { %>
+        — <a href="/products" style="color:#ff5a00; text-decoration:none;">Clear all filters</a>
+      <% } %>
+    </p>
+
+    <!-- FILTER AND SEARCH BAR -->
+    <form class="filter-bar" action="/products" method="GET">
+
+      <!-- Search by name -->
+      <div class="filter-group">
+        <label>Search</label>
+        <input
+          type="text"
+          name="search"
+          placeholder="Search products..."
+          value="<%= search %>"
+        >
+      </div>
+
+      <!-- Filter by category -->
+      <div class="filter-group">
+        <label>Category</label>
+        <select name="category">
+          <option value="">All Categories</option>
+          <% categories.forEach(function(cat) { %>
+            <option value="<%= cat %>" <%= category === cat ? 'selected' : '' %>>
+              <%= cat %>
+            </option>
+          <% }); %>
+        </select>
+      </div>
+
+      <!-- Min price -->
+      <div class="filter-group">
+        <label>Min Price (PKR)</label>
+        <input
+          type="number"
+          name="minPrice"
+          placeholder="e.g. 1000"
+          value="<%= minPrice %>"
+          min="0"
+        >
+      </div>
+
+      <!-- Max price -->
+      <div class="filter-group">
+        <label>Max Price (PKR)</label>
+        <input
+          type="number"
+          name="maxPrice"
+          placeholder="e.g. 10000"
+          value="<%= maxPrice %>"
+          min="0"
+        >
+      </div>
+
+      <!-- Buttons -->
+      <button type="submit" class="filter-btn">FILTER</button>
+      <a href="/products" class="clear-btn">CLEAR</a>
+
+    </form>
+
+    <!-- PRODUCT GRID -->
+    <div class="product-grid">
+
+      <% if (products.length === 0) { %>
+        <div class="no-products">
+          <h3>No products found</h3>
+          <p>Try adjusting your search or filters</p>
+        </div>
+      <% } %>
+
+      <% products.forEach(function(product) { %>
+        <div class="product-card-db">
+          <img src="<%= product.image %>" alt="<%= product.name %>">
+          <div class="card-info">
+            <p class="card-category"><%= product.category %></p>
+            <h4 class="card-name"><%= product.name %></h4>
+            <p class="card-price">PKR <%= product.price.toLocaleString() %></p>
+            <p class="card-rating">
+              ★ <%= product.rating %> / 5
+            </p>
+            <p class="card-stock">
+              <% if (product.stock > 0) { %>
+                In Stock (<%= product.stock %> left)
+              <% } else { %>
+                Out of Stock
+              <% } %>
+            </p>
+          </div>
+        </div>
+      <% }); %>
+
+    </div>
+
+    <!-- PAGINATION -->
+    <% if (totalPages > 1) { %>
+      <div class="pagination">
+
+        <!-- Previous button -->
+        <% if (currentPage > 1) { %>
+          <a href="/products?page=<%= currentPage - 1 %>&search=<%= search %>&category=<%= category %>&minPrice=<%= minPrice %>&maxPrice=<%= maxPrice %>">
+            ← Previous
+          </a>
+        <% } else { %>
+          <span class="disabled">← Previous</span>
+        <% } %>
+
+        <!-- Page number buttons -->
+        <% for (let i = 1; i <= totalPages; i++) { %>
+          <% if (i === currentPage) { %>
+            <span class="active"><%= i %></span>
+          <% } else { %>
+            <a href="/products?page=<%= i %>&search=<%= search %>&category=<%= category %>&minPrice=<%= minPrice %>&maxPrice=<%= maxPrice %>">
+              <%= i %>
+            </a>
+          <% } %>
+        <% } %>
+
+        <!-- Next button -->
+        <% if (currentPage < totalPages) { %>
+          <a href="/products?page=<%= currentPage + 1 %>&search=<%= search %>&category=<%= category %>&minPrice=<%= minPrice %>&maxPrice=<%= maxPrice %>">
+            Next →
+          </a>
+        <% } else { %>
+          <span class="disabled">Next →</span>
+        <% } %>
+
+      </div>
+    <% } %>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="bottom-container">
+      <div class="footer-bottom">
+        <div class="copyright">
+          <img src="https://pk.khaadi.com/on/demandware.static/-/Library-Sites-KhaadiSharedLibrary/default/dw6994d6b6/images/FooterImages/Khaadi-Logo.png"
+            class="khaadi-logo" alt="Khaadi">
+          <p>Copyright &copy; 2026 Weaves Corporation Limited. All Rights Reserved.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/app.js"></script>
+
+</body>
+</html>
